@@ -1,0 +1,347 @@
+{
+  "info": {
+    "_postman_id": "f3eb9e62-6560-45f3-a56c-c6687c48fc59",
+    "name": "My Collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53204834",
+    "_collection_link": "https://go.postman.co/collection/53204834-f3eb9e62-6560-45f3-a56c-c6687c48fc59?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8080/api/establecimientos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos?page=0&size=5&sort=nombre,asc",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            },
+            {
+              "key": "sort",
+              "value": "nombre,asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos?tipo=ESCUELA&page=0&size=3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos"
+          ],
+          "query": [
+            {
+              "key": "tipo",
+              "value": "ESCUELA"
+            },
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"tipo\": \"ESCUELA\",\r\n    \"ruc\": \"12345678901\",\r\n    \"nombre\": \"Autoescuela Nuevo Sol\",\r\n    \"direccion\": \"Av. Prueba 456\",\r\n    \"codigoUbigeo\": \"150101\",\r\n    \"estado\": \"ACTIVO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/1",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"tipo\": \"ESCUELA\",\r\n    \"ruc\": \"12345678901\",\r\n    \"nombre\": \"Autoescuela Nuevosss Sol\",\r\n    \"direccion\": \"Av. Prueba 456\",\r\n    \"codigoUbigeo\": \"150101\",\r\n    \"estado\": \"ACTIVO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/1",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nombre\": \"Nombre Modificado Parcialmente 1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/1",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/busqueda-rapida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/busqueda-rapida?nombreUbicacion=LIMA",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "busqueda-rapida"
+          ],
+          "query": [
+            {
+              "key": "nombreUbicacion",
+              "value": "LIMA"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/establecimientos/en-memoria",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos/en-memoria?page=0&size=3&sort=nombre,desc",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos",
+            "en-memoria"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "3"
+            },
+            {
+              "key": "sort",
+              "value": "nombre,desc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/admin/dashboard",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "admin123",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/admin/dashboard",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "admin",
+            "dashboard"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": " http://localhost:8080/api/establecimientos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/establecimientos?tipo=ESCUELA&page=0&size=5&sort=nombre,asc",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "establecimientos"
+          ],
+          "query": [
+            {
+              "key": "tipo",
+              "value": "ESCUELA"
+            },
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            },
+            {
+              "key": "sort",
+              "value": "nombre,asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
