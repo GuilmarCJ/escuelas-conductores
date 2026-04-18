@@ -1,0 +1,177 @@
+-- =====================================================
+-- SCRIPT COMPLETO PARA CREAR LA BASE DE DATOS
+-- ORACLE XE - PROYECTO ESCUELA DE CONDUCTORES
+-- =====================================================
+
+-- =====================================================
+-- 0. LIMPIEZA INICIAL (opcional: eliminar objetos si existen)
+-- =====================================================
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP PROCEDURE sp_buscar_por_ubicacion';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE establecimiento CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ubigeo CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE usuario CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP SEQUENCE seq_establecimiento';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+-- =====================================================
+-- 1. CREAR SECUENCIA
+-- =====================================================
+CREATE SEQUENCE seq_establecimiento
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+-- =====================================================
+-- 2. CREAR TABLA UBIGEO
+-- =====================================================
+CREATE TABLE ubigeo (
+    codigo_ubigeo VARCHAR2(6) PRIMARY KEY,
+    departamento VARCHAR2(100) NOT NULL,
+    provincia VARCHAR2(100) NOT NULL,
+    distrito VARCHAR2(100) NOT NULL,
+    nombre_completo VARCHAR2(400) GENERATED ALWAYS AS (
+        departamento || ' - ' || provincia || ' - ' || distrito
+    ) VIRTUAL
+);
+
+-- =====================================================
+-- 3. CREAR TABLA ESTABLECIMIENTO
+-- =====================================================
+CREATE TABLE establecimiento (
+    id NUMBER PRIMARY KEY,
+    tipo VARCHAR2(20) NOT NULL,
+    ruc VARCHAR2(11) NOT NULL,
+    nombre VARCHAR2(200) NOT NULL,
+    direccion VARCHAR2(300),
+    codigo_ubigeo VARCHAR2(6),
+    estado VARCHAR2(20) DEFAULT 'ACTIVO',
+    fecha_registro DATE DEFAULT SYSDATE,
+    fecha_actualizacion DATE,
+    activo NUMBER(1) DEFAULT 1,
+    CONSTRAINT chk_tipo CHECK (tipo IN ('ESCUELA', 'CENTRO_MEDICO', 'CENTRO_EVALUACION')),
+    CONSTRAINT fk_establecimiento_ubigeo FOREIGN KEY (codigo_ubigeo) REFERENCES ubigeo(codigo_ubigeo)
+);
+
+-- =====================================================
+-- 4. CREAR ÍNDICES
+-- =====================================================
+CREATE INDEX idx_ubigeo_nombre ON ubigeo(nombre_completo);
+CREATE INDEX idx_establecimiento_tipo ON establecimiento(tipo);
+CREATE INDEX idx_establecimiento_activo ON establecimiento(activo);
+
+-- =====================================================
+-- 5. TRIGGER PARA ACTUALIZAR FECHA DE ACTUALIZACIÓN
+-- =====================================================
+CREATE OR REPLACE TRIGGER trg_establecimiento_update
+    BEFORE UPDATE ON establecimiento
+    FOR EACH ROW
+BEGIN
+    :NEW.fecha_actualizacion := SYSDATE;
+END;
+/
+
+-- =====================================================
+-- 6. PROCEDIMIENTO ALMACENADO: BÚSQUEDA POR UBICACIÓN
+-- =====================================================
+CREATE OR REPLACE PROCEDURE sp_buscar_por_ubicacion (
+    p_nombre_ubicacion IN VARCHAR2,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT e.*
+    FROM establecimiento e
+    INNER JOIN ubigeo u ON e.codigo_ubigeo = u.codigo_ubigeo
+    WHERE UPPER(u.nombre_completo) LIKE '%' || UPPER(p_nombre_ubicacion) || '%'
+      AND e.activo = 1
+    ORDER BY e.nombre;
+END;
+/
+
+-- =====================================================
+-- 7. CREAR TABLA USUARIO (PARA AUTENTICACIÓN)
+-- =====================================================
+CREATE TABLE usuario (
+    username VARCHAR2(50) PRIMARY KEY,
+    password VARCHAR2(100) NOT NULL,
+    rol VARCHAR2(20) NOT NULL,
+    activo NUMBER(1) DEFAULT 1
+);
+
+-- =====================================================
+-- 8. INSERTAR DATOS DE PRUEBA
+-- =====================================================
+
+-- UBIGEO: algunos distritos de ejemplo
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('150101', 'LIMA', 'LIMA', 'LIMA');
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('150102', 'LIMA', 'LIMA', 'ANCON');
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('150103', 'LIMA', 'LIMA', 'ATE');
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('040101', 'AREQUIPA', 'AREQUIPA', 'AREQUIPA');
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('040102', 'AREQUIPA', 'AREQUIPA', 'CAYMA');
+INSERT INTO ubigeo (codigo_ubigeo, departamento, provincia, distrito) VALUES ('040103', 'AREQUIPA', 'AREQUIPA', 'CERRO COLORADO');
+COMMIT;
+
+-- USUARIO: contraseña 'admin123' encriptada con BCrypt
+-- NOTA: Este hash es un ejemplo. Para generar un hash real, puedes usar una herramienta online o un pequeño programa Java.
+-- Si quieres probar rápidamente, puedes insertar una contraseña en texto plano temporalmente, pero luego deberás encriptar.
+INSERT INTO usuario (username, password, rol) VALUES ('admin', '$2a$10$9IcXOFOH19YdLxoEE73/H.4M.Cn6RVq97PyrqJ/7GTdt09zxh/mQy', 'ADMIN');
+COMMIT;
+
+-- ESTABLECIMIENTO: algunos registros de ejemplo
+INSERT INTO establecimiento (id, tipo, ruc, nombre, direccion, codigo_ubigeo, estado, activo)
+VALUES (seq_establecimiento.NEXTVAL, 'ESCUELA', '12345678901', 'Autoescuela San Martín', 'Av. Principal 123', '150101', 'ACTIVO', 1);
+
+INSERT INTO establecimiento (id, tipo, ruc, nombre, direccion, codigo_ubigeo, estado, activo)
+VALUES (seq_establecimiento.NEXTVAL, 'CENTRO_MEDICO', '98765432101', 'Centro Médico Salud Vial', 'Jr. Los Alamos 456', '150101', 'ACTIVO', 1);
+
+INSERT INTO establecimiento (id, tipo, ruc, nombre, direccion, codigo_ubigeo, estado, activo)
+VALUES (seq_establecimiento.NEXTVAL, 'CENTRO_EVALUACION', '56789012345', 'Centro de Evaluación Arequipa', 'Av. Ejército 789', '040101', 'ACTIVO', 1);
+COMMIT;
+
+-- =====================================================
+-- VERIFICAR QUE TODO ESTÉ CORRECTO
+-- =====================================================
+SELECT 'UBIGEO' AS tabla, COUNT(*) AS registros FROM ubigeo
+UNION ALL
+SELECT 'ESTABLECIMIENTO', COUNT(*) FROM establecimiento
+UNION ALL
+SELECT 'USUARIO', COUNT(*) FROM usuario;
+
+
+
+-- =====================================================
+-- FIN DEL SCRIPT
+-- =====================================================
+
+
+SELECT * FROM usuario WHERE username = 'admin';
+
+UPDATE usuario 
+SET password = '$2a$10$2SXP3TiE8wsSufieNcU8Y.cCldqdrnOLirPC0FkJLamVgGxHDpB2K'  
+WHERE username = 'admin';
+COMMIT;
